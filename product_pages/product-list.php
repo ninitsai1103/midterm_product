@@ -4,6 +4,7 @@ require_once("../db_connect.php");
 // 選取資料
 $sql = "SELECT * FROM product WHERE valid = 1";
 $result = $conn->query($sql);
+$rows = $result->fetch_all(MYSQLI_ASSOC);
 $rowsTotalCount = $result->num_rows;
 // 每頁顯示
 $perPage = 15;
@@ -15,11 +16,12 @@ $pageCount = ceil($rowsTotalCount / $perPage);
 if (isset($_GET["search"])) { //在搜尋的條件下
     $search = $_GET["search"];
     $sql = "SELECT * FROM product WHERE name LIKE '%$search%' AND valid=1";
+    $result = $conn->query($sql);
     //顯示符合搜尋條件且沒有被軟刪除的資料
 } elseif (isset($_GET["p"])) {
     $p = $_GET["p"];
     $startIndex = ($p - 1) * $perPage; //該頁從第幾筆資料開始顯示
-
+    $orderString="";
     $sql = "SELECT * FROM product WHERE valid=1 $orderString LIMIT $startIndex, $perPage";
 } else {
     $p = 1; //預設在第一頁
@@ -27,12 +29,12 @@ if (isset($_GET["search"])) { //在搜尋的條件下
     $orderString = "ORDER BY id ASC";
     $sql = "SELECT * FROM product WHERE valid=1 LIMIT $perPage"; //顯示所有資料
 }
+$conn->query($sql);
+$rows = $result->fetch_all(MYSQLI_ASSOC);
 
-
-if(isset($_GET["search"])) {//如果在搜尋的條件下，顯示共有幾筆資料num_rows
+if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆資料num_rows
     $rowsCount = $result->num_rows;
-}
-else {//否則顯示所有的資料
+} else { //否則顯示所有的資料
     $rowsCount = $rowsTotalCount;
 }
 ?>
@@ -261,122 +263,120 @@ else {//否則顯示所有的資料
                                 <div class="d-flex">
                                     <div class="me-2">排序</div>
                                     <div class="btn-group">
-                                        <a class="btn btn-primary <?php if ($order == 1) echo "active" ?>" href="users.php?order=1&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-1-9 fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 2) echo "active" ?>" href="users.php?order=2&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-9-1 fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 3) echo "active" ?>" href="users.php?order=3&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-a-z fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 4) echo "active" ?>" href="users.php?order=4&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-z-a fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 1) echo "active" ?>" href="product-list.php?order=1&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-1-9 fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 2) echo "active" ?>" href="product-lst.php?order=2&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-9-1 fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 3) echo "active" ?>" href="product-list.php?order=3&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-a-z fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 4) echo "active" ?>" href="product-list.php?order=4&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-z-a fa-fw"></i></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
-                            <?php if($rowsCount > 0):?>
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-secondary text-s font-weight-bolder opacity-7">商品名稱</th>
-                                            <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">價錢</th>
-                                            <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">庫存</th>
-                                            <th class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7">更新時間</th>
-                                            <th class="text-secondary text-center opacity-7">檢視</th>
-                                            <th class="text-secondary text-center opacity-7">修改</th>
-                                            <th class="text-secondary text-center opacity-7">刪除</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $rows = $result->fetch_all(MYSQLI_ASSOC);
-
-                                        foreach ($rows as $product) :
-                                        ?>
+                                <?php if ($rowsCount > 0) : ?>
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-m"><?= $product["name"] ?></h6>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-0 text-m"><?= $product["price"] ?></h6>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-0 text-m"><?= $product["amount"] ?></h6>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <span class="text-secondary text-m font-weight-bold"><?= $product["update"] ?></span>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
-                                                        <i class="fa-solid fa-eye fa-fw"></i>
-                                                    </a>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
-                                                        <i class="fa-solid fa-pen-to-square fa-fw"></i>
-                                                    </a>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
-                                                        <i class="fa-solid fa-trash-can fa-fw"></i>
-                                                    </a>
-                                                </td>
+                                                <th class="text-secondary text-s font-weight-bolder opacity-7">商品名稱</th>
+                                                <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">價錢</th>
+                                                <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">庫存</th>
+                                                <th class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7">更新時間</th>
+                                                <th class="text-secondary text-center opacity-7">檢視</th>
+                                                <th class="text-secondary text-center opacity-7">修改</th>
+                                                <th class="text-secondary text-center opacity-7">刪除</th>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($rows as $product) :?>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex px-2 py-1">
+                                                            <div class="d-flex flex-column justify-content-center">
+                                                                <h6 class="mb-0 text-m"><?= $product["name"] ?></h6>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <h6 class="mb-0 text-m"><?= $product["price"] ?></h6>
+                                                    </td>
+                                                    <td>
+                                                        <h6 class="mb-0 text-m"><?= $product["amount"] ?></h6>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span class="text-secondary text-m font-weight-bold"><?= $product["update"] ?></span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                            <i class="fa-solid fa-eye fa-fw"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                            <i class="fa-solid fa-pen-to-square fa-fw"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                            <i class="fa-solid fa-trash-can fa-fw"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- 商品列表結束 -->
-            <?php if(!isset($_GET["search"])): ?>
-            <!-- 分頁 -->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <?php for($i=1; $i<=$pageCount; $i++): ?>
-                    <!-- 當下的頁數highlight(算是一種class之間要空格) -->
-                    <li class="page-item <?php if($i==$p) echo "active"?>"><a class="page-link" href="product-list.php?order=<?=$order?>&p=<?=$i?>"><?=$i?></a></li>
-                    <?php endfor; ?>
-                </ul>
-            </nav>
-            <!-- 分頁結束 -->
+            <!-- 在搜尋的情況下不顯示分頁 -->
+            <?php if (!isset($_GET["search"])) : ?>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <?php for ($i = 1; $i <= $pageCount; $i++) : ?>
+                            <li class="page-item <?php if ($i == $p) echo "active" ?>">
+                                <a class="page-link" href="product-list.php?order=<?= $order ?>&p=<?= $i ?><?php if (isset($_GET["search"])) echo "&search=$searchValue" ?>">
+                                    <?= $i ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
             <?php endif; ?>
-            <?php endif; ?>
-            <footer class="footer pt-3  ">
-                <div class="container-fluid">
-                    <div class="row align-items-center justify-content-lg-between">
-                        <div class="col-lg-6 mb-lg-0 mb-4">
-                            <div class="copyright text-center text-sm text-muted text-lg-start">
-                                © <script>
-                                    document.write(new Date().getFullYear())
-                                </script>,
-                                made with <i class="fa fa-heart"></i> by
-                                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                                for a better web.
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                                </li>
-                            </ul>
+        <?php endif; ?>
+        <footer class="footer pt-3  ">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="copyright text-center text-sm text-muted text-lg-start">
+                            © <script>
+                                document.write(new Date().getFullYear())
+                            </script>,
+                            made with <i class="fa fa-heart"></i> by
+                            <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+                            for a better web.
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </footer>
+            </div>
+        </footer>
         </div>
     </main>
     <div class="fixed-plugin">
