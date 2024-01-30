@@ -4,11 +4,11 @@ require_once("../db_connect.php");
 // 選取資料
 $sql = "SELECT * FROM product WHERE valid = 1";
 $result = $conn->query($sql);
-$rowsCount = $result->num_rows;
+$rowsTotalCount = $result->num_rows;
 // 每頁顯示
 $perPage = 15;
 // 共有幾頁
-$pageCount = ceil($rowsCount / $perPage);
+$pageCount = ceil($rowsTotalCount / $perPage);
 
 
 //搜尋
@@ -26,6 +26,14 @@ if (isset($_GET["search"])) { //在搜尋的條件下
     $order = 1; //預設排序
     $orderString = "ORDER BY id ASC";
     $sql = "SELECT * FROM product WHERE valid=1 LIMIT $perPage"; //顯示所有資料
+}
+
+
+if(isset($_GET["search"])) {//如果在搜尋的條件下，顯示共有幾筆資料num_rows
+    $rowsCount = $result->num_rows;
+}
+else {//否則顯示所有的資料
+    $rowsCount = $rowsTotalCount;
 }
 ?>
 <!DOCTYPE html>
@@ -248,7 +256,7 @@ if (isset($_GET["search"])) { //在搜尋的條件下
                             </div>
                             <div class="d-flex justify-content-between align-item-center">
                                 <div>
-                                    共 <?= $rowsCount ?> 人
+                                    共 <?= $rowsCount ?> 筆
                                 </div>
                                 <div class="d-flex">
                                     <div class="me-2">排序</div>
@@ -263,6 +271,7 @@ if (isset($_GET["search"])) { //在搜尋的條件下
                         </div>
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
+                            <?php if($rowsCount > 0):?>
                                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
@@ -323,6 +332,19 @@ if (isset($_GET["search"])) { //在搜尋的條件下
                 </div>
             </div>
             <!-- 商品列表結束 -->
+            <?php if(!isset($_GET["search"])): ?>
+            <!-- 分頁 -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <?php for($i=1; $i<=$pageCount; $i++): ?>
+                    <!-- 當下的頁數highlight(算是一種class之間要空格) -->
+                    <li class="page-item <?php if($i==$p) echo "active"?>"><a class="page-link" href="product-list.php?order=<?=$order?>&p=<?=$i?>"><?=$i?></a></li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+            <!-- 分頁結束 -->
+            <?php endif; ?>
+            <?php endif; ?>
             <footer class="footer pt-3  ">
                 <div class="container-fluid">
                     <div class="row align-items-center justify-content-lg-between">
