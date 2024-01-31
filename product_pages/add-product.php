@@ -23,7 +23,7 @@
                 <i class="fa-solid fa-angles-left fa-fw"></i>回商品管理
             </a>
         </div>
-        <form action="doAddProduct.php" method="post">
+        <form action="doAddProduct.php" method="post" enctype="multipart/form-data">
             <div class="mb-2">
                 <input type="text" class="form-control" name="name" placeholder="輸入商品名稱">
             </div>
