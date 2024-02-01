@@ -2,15 +2,28 @@
 // 連線資料庫
 require_once("../db_connect.php");
 // 選取資料
-$sql = "SELECT * FROM product WHERE valid = 1";
-$result = $conn->query($sql);
-$rows = $result->fetch_all(MYSQLI_ASSOC);
-$rowsTotalCount = $result->num_rows;
+$sqlAll = "SELECT * FROM product WHERE valid = 1";
+$resultAll = $conn->query($sqlAll);
+$rowsAll = $resultAll->fetch_all(MYSQLI_ASSOC);
+$rowsTotalCount = $resultAll->num_rows;
 // 每頁顯示
 $perPage = 15;
 // 共有幾頁
 $pageCount = ceil($rowsTotalCount / $perPage);
+// 排序
+if (isset($_GET["order"])) {
+    $order = $_GET["order"];
 
+    if ($order == 1) {
+        $orderString = "ORDER BY id ASC";
+    } elseif ($order == 2) {
+        $orderString = "ORDER BY id DESC";
+    } elseif ($order == 3) {
+        $orderString = "ORDER BY name ASC";
+    } elseif ($order == 4) {
+        $orderString = "ORDER BY name DESC";
+    }
+}
 
 //搜尋
 if (isset($_GET["search"])) { //在搜尋的條件下
@@ -21,7 +34,7 @@ if (isset($_GET["search"])) { //在搜尋的條件下
 } elseif (isset($_GET["p"])) {
     $p = $_GET["p"];
     $startIndex = ($p - 1) * $perPage; //該頁從第幾筆資料開始顯示
-    $orderString="";
+    $orderString = "";
     $sql = "SELECT * FROM product WHERE valid=1 $orderString LIMIT $startIndex, $perPage";
 } else {
     $p = 1; //預設在第一頁
@@ -29,14 +42,27 @@ if (isset($_GET["search"])) { //在搜尋的條件下
     $orderString = "ORDER BY id ASC";
     $sql = "SELECT * FROM product WHERE valid=1 LIMIT $perPage"; //顯示所有資料
 }
-$conn->query($sql);
-$rows = $result->fetch_all(MYSQLI_ASSOC);
+$result = $conn->query($sql);
+
+
 
 if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆資料num_rows
     $rowsCount = $result->num_rows;
 } else { //否則顯示所有的資料
     $rowsCount = $rowsTotalCount;
 }
+
+// 抓主類別資料表
+$sqlCategory = "SELECT * FROM primary_category WHERE valid=1";
+$resultCategory = $conn->query($sqlCategory);
+$rowsCategory = $resultCategory->fetch_all(MYSQLI_ASSOC);
+
+// 抓次類別資料表
+$sqlSecondaryCategory = "SELECT * FROM secondary_category WHERE valid=1";
+$resultSecondaryCategory = $conn->query($sqlSecondaryCategory);
+$rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,6 +87,180 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
     <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
     <!-- Awesome Font -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap JavaScript (Popper.js and Bootstrap JS) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
+    <!-- 檢視修改刪除Modal -->
+    <?php foreach ($rowsAll as $product) : ?>
+    <div class="modal modal-dialog-scrollable fade" id="read" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        <?= $product["name"] ?>
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+
+                        <div class="row">
+                            <div class="col-4 ">
+                                <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                            </div>
+                            <div class="col-8">
+                                <table class="table table-bordered">
+
+                                    <tr>
+                                        <th>ID</th>
+                                        <td>
+                                            <?= $product["id"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>商品名稱</th>
+                                        <td>
+                                            <?= $product["name"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>價格</th>
+                                        <td>
+                                            <?= $product["price"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>庫存</th>
+                                        <td>
+                                            <?= $product["amount"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>主類別</th>
+                                        <td>
+                                            <?= $product["category"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>次類別</th>
+                                        <td>
+                                            <?= $product["secondary_category"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>商品描述</th>
+                                        <td class="text-wrap">
+                                            <?= $product["description"] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>上次更新時間</th>
+                                        <td>
+                                            <?= $product["update"] ?>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-lg-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <div>
+                        <!-- 修改 -->
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= $product["id"] ?>">
+                            修改
+                        </button>
+                        <!-- 刪除 -->
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal<?= $product["id"] ?>" role="button"><i class="fa-solid fa-trash fa-fw"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 按修改會跳出來的東西 (完成)-->
+    <div class="modal fade" id="editModal<?= $product["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">修改商品資料</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row">
+
+                    <div class="col-4 d-flex justify-content-center mt-3">
+                        <div class="previewimage border">
+                            <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                        </div>
+                    </div>
+
+                    <div class="col-8">
+                        <!-- Form for editing user details -->
+                        <form action="doUpdateProduct.php" method="post">
+                            <!-- <input type="hidden" name="user_id" value=""> -->
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="name" placeholder="輸入商品名稱">
+                            </div>
+                            <div class="mb-2 d-flex">
+                                <select class="form-select" aria-label="選擇主類別" name="primaryCategory">
+                                    <option selected>選擇主類別</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div>
+                                    <a name="addPrimaryCategory" id="" class="btn btn-success" href="#" role="button">
+                                        <i class="fa-solid fa-plus fa-fw"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mb-2 d-flex">
+                                <select class="form-select" aria-label="選擇次類別" name="secondaryCategory">
+                                    <option selected>選擇次類別</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div>
+                                    <a name="addSecondaryCategory" id="" class="btn btn-success" href="#" role="button">
+                                        <i class="fa-solid fa-plus fa-fw"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="mb-2 d-flex">
+                                <input type="text" class="form-control me-2" name="price" placeholder="輸入價格">
+                                <input type="text" class="form-control" name="amount" placeholder="輸入庫存量">
+                            </div>
+                            <div class="mb-3">
+                                <label for="cover" class="form-label">商品封面</label>
+                                <input class="form-control" type="file" id="cover" name="cover">
+                            </div>
+                            <div class="mb-3">
+                                <label for="img" class="form-label">商品細節照</label>
+                                <input class="form-control" type="file" id="img" name="img">
+                            </div>
+                            <div class="mb-2 form-floating">
+                                <textarea class="form-control" name="description" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">商品描述</label>
+                            </div>
+                            <div class="d-grid gap-2 col-2 mx-auto">
+                                <button type="submit" class="btn btn-primary">
+                                    確認
+                                </button>
+                            </div>
+                            <!-- <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                        <button type="submit" class="btn btn-danger">確認</button>
+                                    </div> -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    <!-- End of modal -->
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -77,7 +277,7 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
         <div class=" w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" href="./pages/dashboard.html">
+                    <a class="nav-link" href="./pages/dashboard.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                         </div>
@@ -94,7 +294,7 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/billing.html">
+                    <a class="nav-link active" href="./pages/billing.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
                         </div>
@@ -240,6 +440,10 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                             <div class="col">
                                 <form action="">
                                     <div class="input-group">
+                                        <?php if (isset($_GET["search"])) : ?>
+                                            <a name="" id="" class="btn btn-primary" href="product-list.php" role="button">返回</a>
+                                        <?php endif; ?>
+
                                         <input style="height: 41px;" type="search" class="form-control box-sizing inline-block" placeholder="商品名稱" aria-label="Recipient's username" aria-describedby="button-addon2" name="search" <?php if (isset($_GET["search"])) : $searchValue = $_GET["search"]; ?> value="<?= $searchValue ?>" <?php endif; ?>>
                                         <button class="btn btn-primary" type="search" id="button-addon2"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
                                     </div>
@@ -249,11 +453,15 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                             <div class="d-flex">
                                 <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example">
                                     <option selected>主類別</option>
-                                    <option value="1">One</option>
+                                    <?php foreach ($rowsCategory as $primaryCategory) : ?>
+                                        <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <select class="form-select form-select-lg mb-3" aria-label="Large select example">
                                     <option selected>次類別</option>
-                                    <option value="1">One</option>
+                                    <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
+                                        <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="d-flex justify-content-between align-item-center">
@@ -287,7 +495,9 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($rows as $product) :?>
+                                            <?php
+                                            $rows = $result->fetch_all(MYSQLI_ASSOC);
+                                            foreach ($rows as $product) : ?>
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex px-2 py-1">
@@ -306,19 +516,19 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                                                         <span class="text-secondary text-m font-weight-bold"><?= $product["update"] ?></span>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#read">
                                                             <i class="fa-solid fa-eye fa-fw"></i>
-                                                        </a>
+                                                        </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                        <button class="btn btn-primary"type="button" role="button" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
                                                             <i class="fa-solid fa-pen-to-square fa-fw"></i>
-                                                        </a>
+                                                        </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <a href="javascript:;" class="text-secondary font-weight-bold text-m" data-toggle="tooltip" data-original-title="Edit user">
+                                                        <button class="btn btn-danger" type="button" href="doDeleteProduct.php" method="post" role="button">
                                                             <i class="fa-solid fa-trash-can fa-fw"></i>
-                                                        </a>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -330,13 +540,14 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
                 </div>
             </div>
             <!-- 商品列表結束 -->
+
             <!-- 在搜尋的情況下不顯示分頁 -->
             <?php if (!isset($_GET["search"])) : ?>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         <?php for ($i = 1; $i <= $pageCount; $i++) : ?>
                             <li class="page-item <?php if ($i == $p) echo "active" ?>">
-                                <a class="page-link" href="product-list.php?order=<?= $order ?>&p=<?= $i ?><?php if (isset($_GET["search"])) echo "&search=$searchValue" ?>">
+                                <a class="page-link" href="product-list.php?order=<?= $order ?>&p=<?= $i ?>">
                                     <?= $i ?>
                                 </a>
                             </li>
@@ -452,7 +663,7 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
         </div>
     </div>
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/popper.min.js"></script>
+    <!-- <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
@@ -464,7 +675,7 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
-    </script>
+    </script> -->
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
