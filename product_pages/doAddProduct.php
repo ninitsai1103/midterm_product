@@ -38,7 +38,7 @@ if ($_FILES["cover"]["error"] == 0 && $_FILES["img"]["error"] == 0) {
     // exit;
 
     // 將檔案移至指定目錄
-    if (move_uploaded_file($_FILES["cover"]["tmp_name"], "../cover/upload" . $filenameCover) && move_uploaded_file($_FILES["img"]["tmp_name"], "../img/upload" . $filenameImg)) {
+    if (move_uploaded_file($_FILES["cover"]["tmp_name"], "../product_cover/upload" . $filenameCover) && move_uploaded_file($_FILES["img"]["tmp_name"], "../product_img/upload" . $filenameImg)) {
 
         echo "upload success!";
         // var_dump($_FILES["cover"]["name"]);
@@ -50,7 +50,7 @@ if ($_FILES["cover"]["error"] == 0 && $_FILES["img"]["error"] == 0) {
 
 // 將新增資料收入sql變數中
 $sql = "INSERT INTO product (name, price, amount, description, `update`, category, secondary_category, cover, img, valid) VALUES ('$name', $price, $amount, '$description', '$now', $primaryCategory, $secondaryCategory, '$filenameCover', '$filenameImg',  1)";
-var_dump($sql);
+// var_dump($sql);
 // 是否成功輸入資料表中
 if ($conn->query($sql)) {
     echo "新增資料完成";
@@ -59,8 +59,11 @@ if ($conn->query($sql)) {
 }
 
 // 新增資料是否成功
-if ($conn->query($sql)) {
-    echo "新增資料完成";
-} else {
-    echo "新增資料錯誤: " . $conn->error;
-}
+// if ($conn->query($sql)) {
+//     echo "新增資料完成";
+// } else {
+//     echo "新增資料錯誤: " . $conn->error;
+// }
+
+$conn->close();
+header("location: ../product_pages/product-list.php");

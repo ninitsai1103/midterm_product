@@ -13,6 +13,6 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->close();
 
-header("location: proudct-list.php");
+header("location: product-list.php");
 
 ?>

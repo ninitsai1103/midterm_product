@@ -1,3 +1,16 @@
+<?php
+require_once("../db_connect.php");
+// 抓主類別資料表
+$sqlCategory = "SELECT * FROM primary_category WHERE valid=1";
+$resultCategory = $conn->query($sqlCategory);
+$rowsCategory = $resultCategory->fetch_all(MYSQLI_ASSOC);
+
+// 抓次類別資料表
+$sqlSecondaryCategory = "SELECT * FROM secondary_category WHERE valid=1";
+$resultSecondaryCategory = $conn->query($sqlSecondaryCategory);
+$rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
+
+?>
 <!doctype html>
 <html lang="en">
 
@@ -30,12 +43,12 @@
             <div class="mb-2 d-flex">
                 <select class="form-select" aria-label="選擇主類別" name="primaryCategory">
                     <option selected>選擇主類別</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <?php foreach ($rowsCategory as $primaryCategory) : ?>
+                        <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <div>
-                    <a name="addPrimaryCategory" id="" class="btn btn-success" href="#" role="button">
+                    <a name="addPrimaryCategory" id="" class="btn btn-success" href="../category_pages/addPriCategory.php" role="button">
                         <i class="fa-solid fa-plus fa-fw"></i>
                     </a>
                 </div>
@@ -43,13 +56,13 @@
             <div class="mb-2 d-flex">
                 <select class="form-select" aria-label="選擇次類別" name="secondaryCategory">
                     <option selected>選擇次類別</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
+                        <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <div>
-                    <a name="addSecondaryCategory" id="" class="btn btn-success" href="#" role="button">
-                    <i class="fa-solid fa-plus fa-fw"></i>
+                    <a name="addSecondaryCategory" id="" class="btn btn-success" href="../category_pages/addSecCategory.php" role="button">
+                        <i class="fa-solid fa-plus fa-fw"></i>
                     </a>
                 </div>
             </div>

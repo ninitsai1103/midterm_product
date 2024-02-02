@@ -29,7 +29,7 @@ if ($_FILES['cover']['error'] == 0){
     $filenameCover=$filenameCover.".".$fileExtCover; 
     
     #上傳圖片
-    if(move_uploaded_file($_FILES['cover']['tmp_name'], '../cover/update'.$filenameCover)){
+    if(move_uploaded_file($_FILES['cover']['tmp_name'], '../product_cover/update'.$filenameCover)){
         echo "封面更新成功";
     }else{
         echo "封面更新失敗";
@@ -49,7 +49,7 @@ if ($_FILES['img']['error'] == 0){
     $filenameImg=$filenameImg.".".$fileExtImg; 
     
     #上傳圖片
-    if(move_uploaded_file($_FILES['img']['tmp_name'], '../img/update'.$filenameImg)){
+    if(move_uploaded_file($_FILES['img']['tmp_name'], '../product_img/update'.$filenameImg)){
         echo "細節照更新成功";
     }else{
         echo "細節照更新失敗";
@@ -72,4 +72,4 @@ if($conn->query($sql) === TRUE){
 $conn->close();
 
 //修改完成,自動回到 user-edit.php?id=$id" 頁面 (閃一下)
-header("location: user-edit.php?id=$id");
+header("location: product-list.php");

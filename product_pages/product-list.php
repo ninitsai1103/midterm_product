@@ -19,9 +19,9 @@ if (isset($_GET["order"])) {
     } elseif ($order == 2) {
         $orderString = "ORDER BY id DESC";
     } elseif ($order == 3) {
-        $orderString = "ORDER BY name ASC";
+        $orderString = "ORDER BY update ASC";
     } elseif ($order == 4) {
-        $orderString = "ORDER BY name DESC";
+        $orderString = "ORDER BY update DESC";
     }
 }
 
@@ -56,7 +56,7 @@ if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆
 $sqlCategory = "SELECT * FROM primary_category WHERE valid=1";
 $resultCategory = $conn->query($sqlCategory);
 $rowsCategory = $resultCategory->fetch_all(MYSQLI_ASSOC);
-
+// var_dump($rowsCategory);
 // 抓次類別資料表
 $sqlSecondaryCategory = "SELECT * FROM secondary_category WHERE valid=1";
 $resultSecondaryCategory = $conn->query($sqlSecondaryCategory);
@@ -89,202 +89,226 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Bootstrap JavaScript (Popper.js and Bootstrap JS) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
-    <!-- 檢視修改刪除Modal -->
-    <?php foreach ($rowsAll as $product) : ?>
-    <div class="modal modal-dialog-scrollable fade" id="read" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        <?= $product["name"] ?>
-                    </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
 
-                        <div class="row">
-                            <div class="col-4 ">
-                                <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
-                            </div>
-                            <div class="col-8">
-                                <table class="table table-bordered">
-
-                                    <tr>
-                                        <th>ID</th>
-                                        <td>
-                                            <?= $product["id"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>商品名稱</th>
-                                        <td>
-                                            <?= $product["name"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>價格</th>
-                                        <td>
-                                            <?= $product["price"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>庫存</th>
-                                        <td>
-                                            <?= $product["amount"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>主類別</th>
-                                        <td>
-                                            <?= $product["category"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>次類別</th>
-                                        <td>
-                                            <?= $product["secondary_category"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>商品描述</th>
-                                        <td class="text-wrap">
-                                            <?= $product["description"] ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>上次更新時間</th>
-                                        <td>
-                                            <?= $product["update"] ?>
-                                        </td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer d-flex justify-content-lg-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                    <div>
-                        <!-- 修改 -->
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= $product["id"] ?>">
-                            修改
-                        </button>
-                        <!-- 刪除 -->
-                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal<?= $product["id"] ?>" role="button"><i class="fa-solid fa-trash fa-fw"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 按修改會跳出來的東西 (完成)-->
-    <div class="modal fade" id="editModal<?= $product["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">修改商品資料</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="row">
-
-                    <div class="col-4 d-flex justify-content-center mt-3">
-                        <div class="previewimage border">
-                            <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
-                        </div>
-                    </div>
-
-                    <div class="col-8">
-                        <!-- Form for editing user details -->
-                        <form action="doUpdateProduct.php" method="post">
-                            <!-- <input type="hidden" name="user_id" value=""> -->
-                            <div class="mb-2">
-                                <input type="text" class="form-control" name="name" placeholder="輸入商品名稱">
-                            </div>
-                            <div class="mb-2 d-flex">
-                                <select class="form-select" aria-label="選擇主類別" name="primaryCategory">
-                                    <option selected>選擇主類別</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <div>
-                                    <a name="addPrimaryCategory" id="" class="btn btn-success" href="#" role="button">
-                                        <i class="fa-solid fa-plus fa-fw"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mb-2 d-flex">
-                                <select class="form-select" aria-label="選擇次類別" name="secondaryCategory">
-                                    <option selected>選擇次類別</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <div>
-                                    <a name="addSecondaryCategory" id="" class="btn btn-success" href="#" role="button">
-                                        <i class="fa-solid fa-plus fa-fw"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="mb-2 d-flex">
-                                <input type="text" class="form-control me-2" name="price" placeholder="輸入價格">
-                                <input type="text" class="form-control" name="amount" placeholder="輸入庫存量">
-                            </div>
-                            <div class="mb-3">
-                                <label for="cover" class="form-label">商品封面</label>
-                                <input class="form-control" type="file" id="cover" name="cover">
-                            </div>
-                            <div class="mb-3">
-                                <label for="img" class="form-label">商品細節照</label>
-                                <input class="form-control" type="file" id="img" name="img">
-                            </div>
-                            <div class="mb-2 form-floating">
-                                <textarea class="form-control" name="description" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">商品描述</label>
-                            </div>
-                            <div class="d-grid gap-2 col-2 mx-auto">
-                                <button type="submit" class="btn btn-primary">
-                                    確認
-                                </button>
-                            </div>
-                            <!-- <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                                        <button type="submit" class="btn btn-danger">確認</button>
-                                    </div> -->
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endforeach; ?>
-    <!-- End of modal -->
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
+    <!-- 檢視修改刪除Modal -->
+    <?php foreach ($rowsAll as $product) : ?>
+        <div class="modal modal-dialog-scrollable fade" id="read<?= $product["id"] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                            <?= $product["name"] ?>
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+
+                            <div class="row">
+                                <div class="col-4 ">
+                                    <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                                </div>
+                                <div class="col-8">
+                                    <table class="table table-bordered">
+
+                                        <tr>
+                                            <th>ID</th>
+                                            <td>
+                                                <?= $product["id"] ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>商品名稱</th>
+                                            <td>
+                                                <?= $product["name"] ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>價格</th>
+                                            <td>
+                                                <?= $product["price"] ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>庫存</th>
+                                            <td>
+                                                <?= $product["amount"] ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>主類別</th>
+                                            <td>
+                                                <?php //echo $rowsCategory[number_format($product["category"])-1]["name"];  
+                                                ?>
+                                                <?php foreach ($rowsCategory as $rows) :
+                                                    if ($rows["id"] == $product["category"])
+                                                        echo $rows["name"];
+                                                endforeach;
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>次類別</th>
+                                            <td>
+                                                <?php foreach ($rowsSecondaryCategory as $rows) :
+                                                    if ($rows["id"] == $product["category"])
+                                                        echo $rows["name"];
+                                                endforeach;
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>商品描述</th>
+                                            <td class="text-wrap">
+                                                <?= $product["description"] ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>上次更新時間</th>
+                                            <td>
+                                                <?= $product["update"] ?>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-lg-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                        <div>
+                            <!-- 修改 -->
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
+                                修改
+                            </button>
+                            <!-- 刪除 -->
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?= $product["id"] ?>" role="button"><i class="fa-solid fa-trash fa-fw"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 按修改會跳出來的東西 (完成)-->
+        <div class="modal fade" id="edit<?= $product["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">修改商品資料</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 d-flex justify-content-center mt-3">
+                            <div class="previewimage border">
+                                <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <!-- Form for editing user details -->
+                            <form action="doUpdateProduct.php" method="post">
+                                <table class="table">
+                                    <tr class="border-end">
+                                        <th>商品名稱</th>
+                                        <td>
+                                            <input type="text" class="form-control" name="name" value="<?= $product["name"] ?>">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>價格</th>
+                                        <td>
+                                            <input type="number" class="form-control" name="price" value="<?= $product["price"] ?>">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>庫存</th>
+                                        <td>
+                                            <input type="number" class="form-control" name="amount" value="<?= $product["amount"] ?>">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>主類別</th>
+                                        <td>
+                                            <select class="form-select" aria-label="選擇主類別" name="primaryCategory">
+                                                <option selected>選擇主類別</option>
+                                                <?php foreach ($rowsCategory as $primaryCategory) : ?>
+                                                    <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>次類別</th>
+                                        <td>
+                                            <select class="form-select" aria-label="選擇次類別" name="secondaryCategory">
+                                                <option selected>選擇次類別</option>
+                                                <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
+                                                    <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>商品描述</th>
+                                        <td>
+                                            <textarea type="text" class="form-control" name="description" value="<?= $user["address"] ?>"></textarea>
+                                        </td>
+                                    </tr>
+
+                                    <!-- <tr class="border-end">
+                                                <th>更換大頭貼</th>
+                                                <td>
+                                                  <input type="file" class="form-control" name="editImg">
+                                                </td>
+                                              </tr> -->
+
+                                </table>
+                                <div class="d-grid gap-2 col-2 mx-auto">
+                                    <button type="submit" class="btn btn-primary">
+                                        確認
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 按刪除會跳出來的東西 -->
+        <div class="modal fade" id="delete<?= $product["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">刪除使用者</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        確認刪除?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <a type="button" href="doDeleteProduct.php?id=<?= $product["id"] ?>" class="btn btn-danger" role="button">確認</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <!-- End of modal -->
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
     <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
                 <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
-                <span class="ms-1 font-weight-bold">MIDTERM PROJECT</span>
+                <span class="ms-1 font-weight-bold">城市生機</span>
             </a>
         </div>
         <hr class="horizontal dark mt-0">
         <div class=" w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="./pages/dashboard.html">
-                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">主頁面
-                        </span>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/tables.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -385,13 +409,6 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
             <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">主頁面</a></li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">商品管理</li>
-                    </ol>
-                    <!-- <h6 class="font-weight-bolder text-white mb-0">主頁面</h6> -->
-                </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
 
@@ -471,10 +488,10 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                 <div class="d-flex">
                                     <div class="me-2">排序</div>
                                     <div class="btn-group">
-                                        <a class="btn btn-primary <?php if ($order == 1) echo "active" ?>" href="product-list.php?order=1&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-1-9 fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 2) echo "active" ?>" href="product-lst.php?order=2&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-9-1 fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 3) echo "active" ?>" href="product-list.php?order=3&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-a-z fa-fw"></i></a>
-                                        <a class="btn btn-primary <?php if ($order == 4) echo "active" ?>" href="product-list.php?order=4&p=<?= $p ?>"><i class="fa-solid fa-arrow-down-z-a fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 1) echo "active" ?>" href="product-list.php?order=1&p=<?= $p ?>">ID<i class="fa-solid fa-arrow-down-short-wide fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 2) echo "active" ?>" href="product-list.php?order=2&p=<?= $p ?>">ID<i class="fa-solid fa-arrow-down-wide-short fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 3) echo "active" ?>" href="product-list.php?order=3&p=<?= $p ?>">更新時間<i class="fa-solid fa-arrow-down-short-wide fa-fw"></i></a>
+                                        <a class="btn btn-primary <?php if ($order == 4) echo "active" ?>" href="product-list.php?order=4&p=<?= $p ?>">更新時間<i class="fa-solid fa-arrow-down-wide-short fa-fw"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -485,6 +502,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                     <table class="table align-items-center mb-0">
                                         <thead>
                                             <tr>
+                                                <th class="text-secondary text-s text-center font-weight-bolder opacity-7">id</th>
                                                 <th class="text-secondary text-s font-weight-bolder opacity-7">商品名稱</th>
                                                 <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">價錢</th>
                                                 <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">庫存</th>
@@ -499,6 +517,9 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                             $rows = $result->fetch_all(MYSQLI_ASSOC);
                                             foreach ($rows as $product) : ?>
                                                 <tr>
+                                                    <td>
+                                                        <h6 class="mb-0 text-m text-center"><?= $product["id"] ?></h6>
+                                                    </td>
                                                     <td>
                                                         <div class="d-flex px-2 py-1">
                                                             <div class="d-flex flex-column justify-content-center">
@@ -516,17 +537,17 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                         <span class="text-secondary text-m font-weight-bold"><?= $product["update"] ?></span>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#read">
+                                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#read<?= $product["id"] ?>">
                                                             <i class="fa-solid fa-eye fa-fw"></i>
                                                         </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <button class="btn btn-primary"type="button" role="button" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
+                                                        <button class="btn btn-primary" type="button" role="button" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
                                                             <i class="fa-solid fa-pen-to-square fa-fw"></i>
                                                         </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <button class="btn btn-danger" type="button" href="doDeleteProduct.php" method="post" role="button">
+                                                        <button class="btn btn-danger" type="button" role="button" data-bs-toggle="modal" data-bs-target="#delete<?= $product["id"] ?>">
                                                             <i class="fa-solid fa-trash-can fa-fw"></i>
                                                         </button>
                                                     </td>
@@ -556,38 +577,6 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 </nav>
             <?php endif; ?>
         <?php endif; ?>
-        <footer class="footer pt-3  ">
-            <div class="container-fluid">
-                <div class="row align-items-center justify-content-lg-between">
-                    <div class="col-lg-6 mb-lg-0 mb-4">
-                        <div class="copyright text-center text-sm text-muted text-lg-start">
-                            © <script>
-                                document.write(new Date().getFullYear())
-                            </script>,
-                            made with <i class="fa fa-heart"></i> by
-                            <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                            for a better web.
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
         </div>
     </main>
     <div class="fixed-plugin">
