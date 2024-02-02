@@ -62,7 +62,6 @@ $sqlSecondaryCategory = "SELECT * FROM secondary_category WHERE valid=1";
 $resultSecondaryCategory = $conn->query($sqlSecondaryCategory);
 $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +108,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
 
                             <div class="row">
                                 <div class="col-4 ">
-                                    <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                                    <img src="../product_cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
                                 </div>
                                 <div class="col-8">
                                     <table class="table table-bordered">
@@ -202,14 +201,9 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="row">
-                        <div class="col-4 d-flex justify-content-center mt-3">
-                            <div class="previewimage border">
-                                <img src="../cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
-                            </div>
-                        </div>
-                        <div class="col-8">
-                            <!-- Form for editing user details -->
-                            <form action="doUpdateProduct.php" method="post">
+                        <div class="col-12">
+                            <!-- Form for editing product details -->
+                            <form action="doUpdateProduct.php" method="post" enctype="multipart/form-data">
                                 <table class="table">
                                     <tr class="border-end">
                                         <th>商品名稱</th>
@@ -252,6 +246,22 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                         </td>
                                     </tr>
                                     <tr class="border-end">
+                                        <th>商品封面</th>
+                                        <td>
+                                            <input type="hidden" name="old_cover" value="<?= $product["cover"] ?>">
+                                            <img src="../product_cover/<?= $product["cover"] ?>" style="width: 300px; height: 300px;" alt="">
+                                            <input type="file" name="cover">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
+                                        <th>商品細節照</th>
+                                        <td>
+                                            <input type="hidden" name="old_img" value="<?= $product["img"] ?>">
+                                            <img src="../product_img/<?= $product["img"] ?>" style="width: 300px; height: 300px;" alt="">
+                                            <input type="file" name="img">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-end">
                                         <th>商品描述</th>
                                         <td>
                                             <textarea type="text" class="form-control" name="description" value="<?= $user["address"] ?>"></textarea>
@@ -267,6 +277,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
 
                                 </table>
                                 <div class="d-grid gap-2 col-2 mx-auto">
+                                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                     <button type="submit" class="btn btn-primary">
                                         確認
                                     </button>

@@ -32,13 +32,13 @@ if ($_FILES["cover"]["error"] == 0 && $_FILES["img"]["error"] == 0) {
     $fileExtCover = pathinfo($_FILES["cover"]["name"], PATHINFO_EXTENSION);
     $fileExtImg = pathinfo($_FILES["img"]["name"], PATHINFO_EXTENSION);
     // 將以上兩者合併成檔名與副檔名重新存於filename中
-    $filenameCover = $filenameCover . "." . $fileExtCover;
-    $filenameImg = $filenameImg . "." . $fileExtImg;
+    $filenameCover = "upload" . $filenameCover . "." . $fileExtCover;
+    $filenameImg = "upload" . $filenameImg . "." . $fileExtImg;
     // echo $filename;
     // exit;
 
     // 將檔案移至指定目錄
-    if (move_uploaded_file($_FILES["cover"]["tmp_name"], "../product_cover/upload" . $filenameCover) && move_uploaded_file($_FILES["img"]["tmp_name"], "../product_img/upload" . $filenameImg)) {
+    if (move_uploaded_file($_FILES["cover"]["tmp_name"], "../product_cover/" . $filenameCover) && move_uploaded_file($_FILES["img"]["tmp_name"], "../product_img/" . $filenameImg)) {
 
         echo "upload success!";
         // var_dump($_FILES["cover"]["name"]);

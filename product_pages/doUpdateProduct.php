@@ -4,7 +4,7 @@ require_once("../db_connect.php");
 
 if (!isset($_POST["name"])) {
     die("請循正常管道進去");
-} 
+}
 
 $name = $_POST["name"];
 $primaryCategory = number_format($_POST["primaryCategory"]);
@@ -16,60 +16,76 @@ $amount = number_format($_POST["amount"]);
 $description = $_POST["description"];
 $now = date("Y-m-d H:i:s");
 
-$id = $_POST["id"]; 
-$oldCover = $_POST["cover"];
-$oldImg = $_POST["img"];
+var_dump($_POST);
+// 更新圖片
+$product_id = $_POST["product_id"];
+$sql = "SELECT * FROM product WHERE id=" . $product_id;
+$result= $conn->query($sql);
+$row = $result->fetch_assoc();
+
+$oldCover = $_POST["old_cover"];
+$oldImg = $_POST["old_img"];
 
 // 封面更新
-if ($_FILES['cover']['error'] == 0){
+if ($_FILES['cover']['error'] == 0) {
     #如果有選擇圖片就使用新上傳的圖片
-    $filenameCover=time(); // 取得當前的 Unix 時間戳（秒級別）
+    $filenameCover = time(); // 取得當前的 Unix 時間戳（秒級別）
     // pathinfo 取得上傳檔案的擴展名(路徑/PATHINFO_EXTENSION(.jpg))
-    $fileExtCover=pathinfo($_FILES["cover"]["name"],PATHINFO_EXTENSION);
-    $filenameCover=$filenameCover.".".$fileExtCover; 
-    
+    $fileExtCover = pathinfo($_FILES["cover"]["name"], PATHINFO_EXTENSION);
+    $filenameCover = "update" . $filenameCover . "." . $fileExtCover;
+
     #上傳圖片
-    if(move_uploaded_file($_FILES['cover']['tmp_name'], '../product_cover/update'.$filenameCover)){
+    if (move_uploaded_file($_FILES['cover']['tmp_name'], '../product_cover/' . $filenameCover)) {
         echo "封面更新成功";
-    }else{
+    } else {
         echo "封面更新失敗";
     }
-  } else {
+} else {
     echo $_FILES['cover']['error'];
     #如果沒有選擇圖片就使用原本資料庫的圖片
-    $filenameCover=$oldCover;
-  }
+    $filenameCover = $oldCover;
+}
+
+$sql = "UPDATE product SET name='" . $name . "', cover='" . $filenameCover . "' WHERE id=" . $product_id;
+$conn->query($sql);
 
 // 細節照片更新
-if ($_FILES['img']['error'] == 0){
+if ($_FILES['img']['error'] == 0) {
     #如果有選擇圖片就使用新上傳的圖片
-    $filenameImg=time(); // 取得當前的 Unix 時間戳（秒級別）
+    $filenameImg = time(); // 取得當前的 Unix 時間戳（秒級別）
     // pathinfo 取得上傳檔案的擴展名(路徑/PATHINFO_EXTENSION(.jpg))
-    $fileExtImg=pathinfo($_FILES["img"]["name"],PATHINFO_EXTENSION);
-    $filenameImg=$filenameImg.".".$fileExtImg; 
-    
+    $fileExtImg = pathinfo($_FILES["img"]["name"], PATHINFO_EXTENSION);
+    $filenameImg = "update" . $filenameImg . "." . $fileExtImg;
+
     #上傳圖片
-    if(move_uploaded_file($_FILES['img']['tmp_name'], '../product_img/update'.$filenameImg)){
+    if (move_uploaded_file($_FILES['img']['tmp_name'], '../product_img/' . $filenameImg)) {
         echo "細節照更新成功";
-    }else{
+    } else {
         echo "細節照更新失敗";
     }
-  } else {
+} else {
     echo $_FILES['img']['error'];
     #如果沒有選擇圖片就使用原本資料庫的圖片
-    $filenameImg=$oldImg;
-  }
+    $filenameImg = $oldImg;
+}
 
-$sql="UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, desciption='$description', update=$now WHERE id=$id";
+// $sql = "UPDATE product SET name=?, img=? WHERE id=?";
+// $stmt = $conn->prepare($sql);
+// $stmt->execute([$name, $filenameImg, $product_id]);
 
-if($conn->query($sql) === TRUE){
+$sql = "UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, description='$description' WHERE id=$product_id";
+
+// $sql = "UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, description='$description', `update`=$now WHERE id=$product_id";
+
+
+if ($conn->query($sql) === TRUE) {
     echo "更新成功";
-}else{
-    echo "更新資料錯誤" .$conn->error;
+} else {
+    echo "更新資料錯誤" . $conn->error;
 }
 
 
 $conn->close();
 
-//修改完成,自動回到 user-edit.php?id=$id" 頁面 (閃一下)
-header("location: product-list.php");
+//修改完成
+// header("location: product-list.php");
