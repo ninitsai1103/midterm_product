@@ -31,6 +31,12 @@ if (isset($_GET["search"])) { //在搜尋的條件下
     $sql = "SELECT * FROM product WHERE name LIKE '%$search%' AND valid=1";
     $result = $conn->query($sql);
     //顯示符合搜尋條件且沒有被軟刪除的資料
+} elseif (isset($_GET["secondaryCategorySearch"])) {
+    $secondaryCategorySearch = $_GET["secondaryCategorySearch"];
+    $sql = "SELECT * FROM product WHERE secondary_category = $secondaryCategorySearch AND valid=1";
+    $result = $conn->query($sql);
+    //顯示符合搜尋條件且沒有被軟刪除的資料
+
 } elseif (isset($_GET["p"])) {
     $p = $_GET["p"];
     $startIndex = ($p - 1) * $perPage; //該頁從第幾筆資料開始顯示
@@ -46,7 +52,7 @@ $result = $conn->query($sql);
 
 
 
-if (isset($_GET["search"])) { //如果在搜尋的條件下，顯示共有幾筆資料num_rows
+if (isset($_GET["search"]) || isset($_GET["secondaryCategorySearch"])) { //如果在搜尋的條件下，顯示共有幾筆資料num_rows
     $rowsCount = $result->num_rows;
 } else { //否則顯示所有的資料
     $rowsCount = $rowsTotalCount;
@@ -112,10 +118,10 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                     <div id="carouselExample" class="carousel slide" style="width: 300px; height: 300px;">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
-                                                <img src="../product_cover/<?=$product["cover"]?>" class="d-block w-100" alt="">
+                                                <img src="../product_cover/<?= $product["cover"] ?>" class="d-block w-100" alt="">
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="../product_img/<?=$product["img"]?>" class="d-block w-100" alt="">
+                                                <img src="../product_img/<?= $product["img"] ?>" class="d-block w-100" alt="">
                                             </div>
                                         </div>
                                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -496,21 +502,29 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                 </form>
                             </div>
                             <!-- 類別 -->
-                            <div class="d-flex">
-                                <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example">
-                                    <option selected>主類別</option>
-                                    <?php foreach ($rowsCategory as $primaryCategory) : ?>
-                                        <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <select class="form-select form-select-lg mb-3" aria-label="Large select example">
-                                    <option selected>次類別</option>
-                                    <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
-                                        <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
-                                    <?php endforeach; ?>       
-                                </select>
-                            </div>
-                                <div class="d-flex justify-content-between align-item-center">
+                            <form action="">
+                                <div class="d-flex">
+                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example">
+                                        <option selected>主類別</option>
+                                        <?php foreach ($rowsCategory as $primaryCategory) : ?>
+                                            <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="secondaryCategorySearch">
+                                        <option selected>次類別</option>
+                                        <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
+                                            <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <?php if (!isset($_GET["secondaryCategorySearch"])) : ?>
+                                    <button type="search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
+                                    <?php endif; ?>
+                                    <?php if (isset($_GET["secondaryCategorySearch"])) : ?>
+                                        <a name="" id="" class="btn btn-primary" href="product-list.php" role="button"><i class="fa-solid fa-xmark fa-fw"></i></a>
+                                    <?php endif; ?>
+                                </div>
+                            </form>
+                            <div class="d-flex justify-content-between align-item-center">
                                 <div>
                                     共 <?= $rowsCount ?> 筆
                                 </div>
@@ -592,7 +606,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
             <!-- 商品列表結束 -->
 
             <!-- 在搜尋的情況下不顯示分頁 -->
-            <?php if (!isset($_GET["search"])) : ?>
+            <?php if (!isset($_GET["search"]) && !isset($_GET["secondaryCategorySearch"])) : ?>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         <?php for ($i = 1; $i <= $pageCount; $i++) : ?>
