@@ -105,10 +105,28 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                     </div>
                     <div class="modal-body">
                         <div class="container">
-
                             <div class="row">
                                 <div class="col-4 ">
-                                    <img src="../product_cover/<?= $product["cover"] ?>" alt="<?= $product["name"] ?>" width="300px" height="300px" class="mt-3">
+                                    <!-- <img src="../product_cover///$product["cover"]" alt="//$product["name"] ?>" width="300px" height="300px" class="mt-3"> -->
+                                    <!-- slide顯示兩張圖片 -->
+                                    <div id="carouselExample" class="carousel slide" style="width: 300px; height: 300px;">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <img src="../product_cover/<?=$product["cover"]?>" class="d-block w-100" alt="">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="../product_img/<?=$product["img"]?>" class="d-block w-100" alt="">
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="col-8">
                                     <table class="table table-bordered">
