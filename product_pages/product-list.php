@@ -61,7 +61,7 @@ $rowsCategory = $resultCategory->fetch_all(MYSQLI_ASSOC);
 $sqlSecondaryCategory = "SELECT * FROM secondary_category WHERE valid=1";
 $resultSecondaryCategory = $conn->query($sqlSecondaryCategory);
 $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
-
+// var_dump($rowsSecondaryCategory);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -507,10 +507,10 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                     <option selected>次類別</option>
                                     <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
                                         <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
-                                    <?php endforeach; ?>
+                                    <?php endforeach; ?>       
                                 </select>
                             </div>
-                            <div class="d-flex justify-content-between align-item-center">
+                                <div class="d-flex justify-content-between align-item-center">
                                 <div>
                                     共 <?= $rowsCount ?> 筆
                                 </div>
@@ -698,6 +698,12 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+    <!-- 下拉式選單連動 -->
+    <!-- <script>
+        function(){
+
+        }
+    </script> -->
 </body>
 
 </html>
