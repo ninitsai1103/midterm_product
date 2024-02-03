@@ -16,7 +16,6 @@ $amount = number_format($_POST["amount"]);
 $description = $_POST["description"];
 $now = date("Y-m-d H:i:s");
 
-var_dump($_POST);
 // 更新圖片
 $product_id = $_POST["product_id"];
 $sql = "SELECT * FROM product WHERE id=" . $product_id;
@@ -73,11 +72,12 @@ if ($_FILES['img']['error'] == 0) {
 // $stmt = $conn->prepare($sql);
 // $stmt->execute([$name, $filenameImg, $product_id]);
 
-$sql = "UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, description='$description' WHERE id=$product_id";
+$sql = "UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, description='$description', `change`='$now' WHERE id=$product_id";
 
 // $sql = "UPDATE product SET name='$name', category=$primaryCategory, secondary_category=$secondaryCategory, price=$price, amount=$amount, description='$description', `update`=$now WHERE id=$product_id";
 
-
+echo "<br>";
+echo $sql;
 if ($conn->query($sql) === TRUE) {
     echo "更新成功";
 } else {
@@ -88,4 +88,4 @@ if ($conn->query($sql) === TRUE) {
 $conn->close();
 
 //修改完成
-// header("location: product-list.php");
+header("location: product-list.php");

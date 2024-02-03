@@ -19,9 +19,9 @@ if (isset($_GET["order"])) {
     } elseif ($order == 2) {
         $orderString = "ORDER BY id DESC";
     } elseif ($order == 3) {
-        $orderString = "ORDER BY update ASC";
+        $orderString = "ORDER BY change ASC";
     } elseif ($order == 4) {
-        $orderString = "ORDER BY update DESC";
+        $orderString = "ORDER BY change DESC";
     }
 }
 
@@ -168,7 +168,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                         <tr>
                                             <th>上次更新時間</th>
                                             <td>
-                                                <?= $product["update"] ?>
+                                                <?= $product["change"] ?>
                                             </td>
                                         </tr>
                                     </table>
@@ -545,7 +545,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                         <h6 class="mb-0 text-m"><?= $product["amount"] ?></h6>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <span class="text-secondary text-m font-weight-bold"><?= $product["update"] ?></span>
+                                                        <span class="text-secondary text-m font-weight-bold"><?= $product["change"] ?></span>
                                                     </td>
                                                     <td class="align-middle text-center">
                                                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#read<?= $product["id"] ?>">
