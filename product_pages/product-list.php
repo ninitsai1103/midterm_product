@@ -19,9 +19,9 @@ if (isset($_GET["order"])) {
     } elseif ($order == 2) {
         $orderString = "ORDER BY id DESC";
     } elseif ($order == 3) {
-        $orderString = "ORDER BY change ASC";
+        $orderString = "ORDER BY `change` ASC";
     } elseif ($order == 4) {
-        $orderString = "ORDER BY change DESC";
+        $orderString = "ORDER BY `change` DESC";
     }
 }
 
@@ -34,7 +34,7 @@ if (isset($_GET["search"])) { //在搜尋的條件下
 } elseif (isset($_GET["p"])) {
     $p = $_GET["p"];
     $startIndex = ($p - 1) * $perPage; //該頁從第幾筆資料開始顯示
-    $orderString = "";
+    // $orderString = "";
     $sql = "SELECT * FROM product WHERE valid=1 $orderString LIMIT $startIndex, $perPage";
 } else {
     $p = 1; //預設在第一頁

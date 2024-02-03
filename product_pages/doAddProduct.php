@@ -49,7 +49,7 @@ if ($_FILES["cover"]["error"] == 0 && $_FILES["img"]["error"] == 0) {
 }
 
 // 將新增資料收入sql變數中
-$sql = "INSERT INTO product (name, price, amount, description, change, category, secondary_category, cover, img, valid) VALUES ('$name', $price, $amount, '$description', '$now', $primaryCategory, $secondaryCategory, '$filenameCover', '$filenameImg',  1)";
+$sql = "INSERT INTO product (name, price, amount, description, `change`, category, secondary_category, cover, img, valid) VALUES ('$name', $price, $amount, '$description', '$now', $primaryCategory, $secondaryCategory, '$filenameCover', '$filenameImg',  1)";
 // var_dump($sql);
 // 是否成功輸入資料表中
 if ($conn->query($sql)) {
