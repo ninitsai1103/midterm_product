@@ -323,7 +323,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/tables.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
+                            <i class="fa-solid fa-user text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">會員管理/註冊</span>
                     </a>
@@ -331,7 +331,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link active" href="./pages/billing.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+                            <i class="fa-sharp fa-solid fa-leaf text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">商品管理</span>
                     </a>
@@ -339,7 +339,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/virtual-reality.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-app text-info text-sm opacity-10"></i>
+                            <i class="fa-solid fa-table-list text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">商品類別管理</span>
                     </a>
@@ -347,7 +347,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/rtl.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            <i class="fa-solid fa-message text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">文章管理</span>
                     </a>
@@ -355,7 +355,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/rtl.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            <i class="fa-solid fa-store text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">訂單管理</span>
                     </a>
@@ -363,7 +363,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/rtl.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            <i class="fa-solid fa-user-tie text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">講師管理</span>
                     </a>
@@ -371,7 +371,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/rtl.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            <i class="fa-solid fa-graduation-cap text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">課程管理</span>
                     </a>
@@ -379,7 +379,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link " href="./pages/rtl.html">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            <i class="fa-solid fa-ticket-simple text-dark text-sm opacity-10 fa-fw"></i>
                         </div>
                         <span class="nav-link-text ms-1">優惠券管理</span>
                     </a>
