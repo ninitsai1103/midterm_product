@@ -115,7 +115,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                 <div class="col-4 ">
                                     <!-- <img src="../product_cover///$product["cover"]" alt="//$product["name"] ?>" width="300px" height="300px" class="mt-3"> -->
                                     <!-- slide顯示兩張圖片 -->
-                                    <div id="carouselExample" class="carousel slide" style="width: 300px; height: 300px;">
+                                    <div id="carousel-<?= $product["id"]?>" class="carousel slide" style="width: 300px; height: 300px;">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
                                                 <img src="../product_cover/<?= $product["cover"] ?>" class="d-block w-100" alt="">
@@ -124,11 +124,11 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                 <img src="../product_img/<?= $product["img"] ?>" class="d-block w-100" alt="">
                                             </div>
                                         </div>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?= $product["id"]?>" data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?= $product["id"]?>" data-bs-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
                                         </button>
@@ -504,22 +504,32 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                             <!-- 類別 -->
                             <form action="">
                                 <div class="d-flex">
-                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example">
+                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch"
+                                        onchange="location.href='product-list.php?primaryCategorySearch=' + this.value;">
                                         <option selected>主類別</option>
                                         <?php foreach ($rowsCategory as $primaryCategory) : ?>
-                                            <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                            <?php if ($primaryCategory["id"] == $_GET["primaryCategorySearch"]) : ?>
+                                                <option selected value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                            <?php else : ?>
+                                                <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                     <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="secondaryCategorySearch">
                                         <option selected>次類別</option>
                                         <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
-                                            <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                            <?php if ($secondaryCategory["primary_id"] == $_GET["primaryCategorySearch"]) : ?>
+                                                <?php if ($secondaryCategory["id"] == $_GET["secondaryCategorySearch"]) : ?>
+                                                    <option selected value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                <?php else : ?>
+                                                    <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
                                     <?php if (!isset($_GET["secondaryCategorySearch"])) : ?>
-                                    <button type="search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
-                                    <?php endif; ?>
-                                    <?php if (isset($_GET["secondaryCategorySearch"])) : ?>
+                                        <button type="search" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
+                                    <?php else : ?>
                                         <a name="" id="" class="btn btn-primary" href="product-list.php" role="button"><i class="fa-solid fa-xmark fa-fw"></i></a>
                                     <?php endif; ?>
                                 </div>
