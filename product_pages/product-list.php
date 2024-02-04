@@ -524,7 +524,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                             <!-- 類別 -->
                             <form action="">
                                 <div class="d-flex">
-                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch" onchange="location.href='product-list.php?primaryCategorySearch=' + this.value;">
+                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch" onchange=this.form.submit()>
                                         <option selected>主類別</option>
                                         <?php foreach ($rowsCategory as $primaryCategory) : ?>
                                             <? $isSelectedPrimary = $primaryCategory["id"] == $_GET["primaryCategorySearch"] ?>
