@@ -527,22 +527,20 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                     <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch" onchange="location.href='product-list.php?primaryCategorySearch=' + this.value;">
                                         <option selected>主類別</option>
                                         <?php foreach ($rowsCategory as $primaryCategory) : ?>
-                                            <?php if ($primaryCategory["id"] == $_GET["primaryCategorySearch"]) : ?>
-                                                <option selected value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
-                                            <?php else : ?>
-                                                <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
-                                            <?php endif; ?>
+                                            <? $isSelectedPrimary = $primaryCategory["id"] == $_GET["primaryCategorySearch"] ?>
+                                            <option <?= $isSelectedPrimary ? 'selected' : '' ?> value="<?= $primaryCategory["id"] ?>">
+                                                <?= $primaryCategory["name"] ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                     <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="secondaryCategorySearch">
                                         <option selected>次類別</option>
                                         <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
                                             <?php if ($secondaryCategory["primary_id"] == $_GET["primaryCategorySearch"]) : ?>
-                                                <?php if ($secondaryCategory["id"] == $_GET["secondaryCategorySearch"]) : ?>
-                                                    <option selected value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
-                                                <?php else : ?>
-                                                    <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
-                                                <?php endif; ?>
+                                                <? $isSelectedSecondary = $secondaryCategory["id"] == $_GET["secondaryCategorySearch"] ?> 
+                                                <option <?= $isSelectedSecondary ? 'selected' : '' ?> value="<?= $secondaryCategory["id"] ?>">
+                                                    <?= $secondaryCategory["name"] ?>
+                                                </option>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </select>
