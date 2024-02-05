@@ -7,10 +7,10 @@ if (!isset($_POST["name"])) {
 }
 
 $name = $_POST["name"];
-$primaryCategory = number_format($_POST["primaryCategory"]);
-$secondaryCategory = number_format($_POST["secondaryCategory"]);
-$price = number_format($_POST["price"]);
-$amount = number_format($_POST["amount"]);
+$primaryCategory = $_POST["primaryCategorySelect"];
+$secondaryCategory = $_POST["secondaryCategorySelect"];
+$price = $_POST["price"];
+$amount = $_POST["amount"];
 // $cover = $_POST["cover"];
 // $img = $_POST["img"];
 $description = $_POST["description"];
@@ -67,7 +67,8 @@ if ($_FILES['img']['error'] == 0) {
     #如果沒有選擇圖片就使用原本資料庫的圖片
     $filenameImg = $oldImg;
 }
-
+$sql = "UPDATE product SET name='" . $name . "', img='" . $filenameImg . "' WHERE id=" . $product_id;
+$conn->query($sql);
 // $sql = "UPDATE product SET name=?, img=? WHERE id=?";
 // $stmt = $conn->prepare($sql);
 // $stmt->execute([$name, $filenameImg, $product_id]);

@@ -115,7 +115,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                 <div class="col-4 ">
                                     <!-- <img src="../product_cover///$product["cover"]" alt="//$product["name"] ?>" width="300px" height="300px" class="mt-3"> -->
                                     <!-- slide顯示兩張圖片 -->
-                                    <div id="carousel-<?= $product["id"]?>" class="carousel slide" style="width: 300px; height: 300px;">
+                                    <div id="carousel-<?= $product["id"] ?>" class="carousel slide" style="width: 300px; height: 300px;">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
                                                 <img src="../product_cover/<?= $product["cover"] ?>" class="d-block w-100" alt="">
@@ -124,11 +124,11 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                 <img src="../product_img/<?= $product["img"] ?>" class="d-block w-100" alt="">
                                             </div>
                                         </div>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?= $product["id"]?>" data-bs-slide="prev">
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?= $product["id"] ?>" data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?= $product["id"]?>" data-bs-slide="next">
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?= $product["id"] ?>" data-bs-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
                                         </button>
@@ -177,7 +177,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                             <th>次類別</th>
                                             <td>
                                                 <?php foreach ($rowsSecondaryCategory as $rows) :
-                                                    if ($rows["id"] == $product["category"])
+                                                    if ($rows["id"] == $product["secondary_category"])
                                                         echo $rows["name"];
                                                 endforeach;
                                                 ?>
@@ -206,8 +206,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                         <div>
                             <!-- 修改 -->
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
-                                修改
+                            <a href="update-product.php?id=<?= $product["id"] ?>" role="button" class="btn btn-primary">修改</a>
                             </button>
                             <!-- 刪除 -->
                             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?= $product["id"] ?>" role="button"><i class="fa-solid fa-trash fa-fw"></i></button>
@@ -248,23 +247,28 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                         </td>
                                     </tr>
                                     <tr class="border-end">
-                                        <th>主類別</th>
+                                        <th>類別</th>
                                         <td>
-                                            <select class="form-select" aria-label="選擇主類別" name="primaryCategory">
-                                                <option selected>選擇主類別</option>
+                                            <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySelect" onchange="location.href='product-list.php?primaryCategorySelect=' + this.value;">
+                                                <option selected>主類別</option>
                                                 <?php foreach ($rowsCategory as $primaryCategory) : ?>
-                                                    <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                                    <?php if ($primaryCategory["id"] == $_GET["primaryCategorySelect"]) : ?>
+                                                        <option selected value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                                    <?php else : ?>
+                                                        <option value="<?= $primaryCategory["id"] ?>"><?= $primaryCategory["name"] ?></option>
+                                                    <?php endif; ?>
                                                 <?php endforeach; ?>
                                             </select>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-end">
-                                        <th>次類別</th>
-                                        <td>
-                                            <select class="form-select" aria-label="選擇次類別" name="secondaryCategory">
-                                                <option selected>選擇次類別</option>
+                                            <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="secondaryCategorySelect">
+                                                <option selected>次類別</option>
                                                 <?php foreach ($rowsSecondaryCategory as $secondaryCategory) : ?>
-                                                    <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                    <?php if ($secondaryCategory["primary_id"] == $_GET["primaryCategorySelect"]) : ?>
+                                                        <?php if ($secondaryCategory["id"] == $_GET["secondaryCategorySelect"]) : ?>
+                                                            <option selected value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                        <?php else : ?>
+                                                            <option value="<?= $secondaryCategory["id"] ?>"><?= $secondaryCategory["name"] ?></option>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 <?php endforeach; ?>
                                             </select>
                                         </td>
@@ -333,7 +337,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
     <?php endforeach; ?>
     <!-- End of modal -->
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
-    <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+    <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 z-index-0" id="sidenav-main ">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
@@ -344,66 +348,83 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
         <hr class="horizontal dark mt-0">
         <div class=" w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
+                <!-- <li class="nav-item">
+          <a class="nav-link" href="./pages/dashboard.html">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">主頁面
+            </span>
+          </a>
+        </li> -->
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/tables.html">
+                    <a class="nav-link " href="../member_pages/member.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-user text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">會員管理/註冊</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="./pages/billing.html">
+                    <a class="nav-link " href="../product_pages/product-list.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-sharp fa-solid fa-leaf text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-credit-card text-success text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">商品管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/virtual-reality.html">
+                    <a class="nav-link " href="../product-category_pages/primary_category.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-table-list text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-app text-info text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">商品類別管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
+                    <a class="nav-link " href="../articles_pages/articles.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-message text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">文章管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
+                    <a class="nav-link " href="../order_pages/order.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-store text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">訂單管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
+                    <a class="nav-link active" href="../teachers_pages/teachers.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-user-tie text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">講師管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
+                    <a class="nav-link " href="../lecture_pages/lecture.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-graduation-cap text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">課程管理</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
+                    <a class="nav-link " href="../coupon_pages/coupon.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-ticket-simple text-dark text-sm opacity-10 fa-fw"></i>
+                            <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
                         </div>
                         <span class="nav-link-text ms-1">優惠券管理</span>
                     </a>
@@ -438,7 +459,6 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                 </li>
             </ul>
         </div>
-
     </aside>
     <main class="main-content position-relative border-radius-lg ">
         <!-- Navbar -->
@@ -504,8 +524,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                             <!-- 類別 -->
                             <form action="">
                                 <div class="d-flex">
-                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch"
-                                        onchange="location.href='product-list.php?primaryCategorySearch=' + this.value;">
+                                    <select class="form-select form-select-lg mb-3 me-2" aria-label="Large select example" name="primaryCategorySearch" onchange="location.href='product-list.php?primaryCategorySearch=' + this.value;">
                                         <option selected>主類別</option>
                                         <?php foreach ($rowsCategory as $primaryCategory) : ?>
                                             <?php if ($primaryCategory["id"] == $_GET["primaryCategorySearch"]) : ?>
@@ -595,9 +614,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                         </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <button class="btn btn-primary" type="button" role="button" data-bs-toggle="modal" data-bs-target="#edit<?= $product["id"] ?>">
-                                                            <i class="fa-solid fa-pen-to-square fa-fw"></i>
-                                                        </button>
+                                                        <a href="update-product.php?id=<?= $product["id"] ?>" class="btn btn-primary" role="button"><i class="fa-solid fa-pen-to-square fa-fw"></i></a>
                                                     </td>
                                                     <td class="align-middle text-center">
                                                         <button class="btn btn-danger" type="button" role="button" data-bs-toggle="modal" data-bs-target="#delete<?= $product["id"] ?>">
