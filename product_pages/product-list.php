@@ -500,7 +500,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                     <div class="card mb-4">
                         <div class="card-header pb-0">
                             <div class="d-flex justify-content-between">
-                                <h4>商品列表</h4>
+                                <h4>商品管理列表</h4>
                                 <div>
                                     新增
                                     <a name="" id="" class="btn btn-primary" href="add-product.php" role="button">
@@ -579,9 +579,9 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                 <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">價錢</th>
                                                 <th class="text-secondary text-s font-weight-bolder opacity-7 ps-2">庫存</th>
                                                 <th class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7">更新時間</th>
-                                                <th class="text-secondary text-center opacity-7">檢視</th>
-                                                <th class="text-secondary text-center opacity-7">修改</th>
-                                                <th class="text-secondary text-center opacity-7">刪除</th>
+                                                <th class="text-secondary text-center opacity-7"></th>
+                                                <th class="text-secondary text-center opacity-7"></th>
+                                                <th class="text-secondary text-center opacity-7"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -614,7 +614,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                                                         </button>
                                                     </td>
                                                     <td class="align-middle text-center">
-                                                        <a href="update-product.php?id=<?= $product["id"] ?>" class="btn btn-primary" role="button"><i class="fa-solid fa-pen-to-square fa-fw"></i></a>
+                                                        <a href="update-product.php?id=<?= $product["id"] ?>" class="btn btn-success" role="button"><i class="fa-solid fa-pen-to-square fa-fw"></i></a>
                                                     </td>
                                                     <td class="align-middle text-center">
                                                         <button class="btn btn-danger" type="button" role="button" data-bs-toggle="modal" data-bs-target="#delete<?= $product["id"] ?>">
