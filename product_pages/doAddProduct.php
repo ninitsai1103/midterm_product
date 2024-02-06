@@ -7,8 +7,8 @@ if (!isset($_POST["name"])) {
 }
 
 $name = $_POST["name"];
-$primaryCategory = number_format($_POST["primaryCategory"]);
-$secondaryCategory = number_format($_POST["secondaryCategory"]);
+$primaryCategory = number_format($_POST["primaryCategorySelect"]);
+$secondaryCategory = number_format($_POST["secondaryCategorySelect"]);
 $price = number_format($_POST["price"]);
 $amount = number_format($_POST["amount"]);
 // $cover = $_POST["cover"];

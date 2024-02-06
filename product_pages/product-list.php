@@ -367,7 +367,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="../product_pages/product-list.php">
+                    <a class="nav-link active" href="../product_pages/product-list.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-sharp fa-solid fa-leaf text-dark text-sm opacity-10 fa-fw"></i>
                             <!-- <i class="ni ni-credit-card text-success text-sm opacity-10"></i> -->
@@ -403,7 +403,7 @@ $rowsSecondaryCategory = $resultSecondaryCategory->fetch_all(MYSQLI_ASSOC);
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="../teachers_pages/teachers.php">
+                    <a class="nav-link" href="../teachers_pages/teachers.php">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-user-tie text-dark text-sm opacity-10 fa-fw"></i>
                             <!-- <i class="ni ni-world-2 text-danger text-sm opacity-10"></i> -->
