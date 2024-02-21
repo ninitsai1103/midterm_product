@@ -1,21 +1,22 @@
 <?php
 require_once("../db_connect.php");
 
-if(!isset($_POST["secondaryCategorySelect"])){
-    $data=[
-        "status"=>0,
-        "message"=>"請循正常管道進入"
-    ];
-    echo json_encode($data);
-}
+// if(!isset($_POST["primaryValue"])){
+//     $data=[
+//         "status"=>0,
+//         "message"=>"請循正常管道進入"
+//     ];
+//     echo json_encode($data);
+//     exit;
+// }
 
-$primaryCategorySelect = $_POST["primaryCategorySelect"];
-$secondaryCategorySelect = $_POST["secondaryCategorySelect"];
+$primaryValue = $_POST["primaryValue"];
 
-$sqlPri = "SELECT id FROM primary_category";
-$resultPri = $conn->query($sqlPri);
+$sql = "SELECT primary_category.name AS primary_name, secondary_category.id, secondary_category.name AS secondary_name FROM primary_category JOIN secondary_category ON primary_category.id = secondary_category.primary_id";
+$result = $conn->query($sql);
+$rows = $result->fetch_all(MYSQLI_ASSOC);
+// var_dump($rows);
 
 
-$sqlSec = "SELECT id, primary_id FROM secondary_category";
-$resultSec = $conn->query($sqlSec);
+        
 ?>
